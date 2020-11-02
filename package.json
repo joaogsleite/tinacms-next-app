@@ -1,5 +1,5 @@
 {
-  "name": "github-next-app",
+  "name": "tinacms-next-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,8 +8,19 @@
     "start": "next start"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "next": "10.0.0",
+    "next-tinacms-github": "^0.32.1",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "react-tinacms-github": "^0.32.0",
+    "styled-components": "^5.2.1",
+    "tinacms": "^0.32.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.6",
+    "@types/react": "^16.9.55",
+    "hygen-next-tinacms-github": "https://github.com/dwalkr/hygen-next-tinacms-github",
+    "typescript": "^4.0.5"
   }
 }
