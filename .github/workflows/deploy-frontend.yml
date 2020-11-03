@@ -1,0 +1,26 @@
+name: Deploy frontend
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - run: npm install
+    - run: npm run build
+    - run: npm run export
+    - run: touch out/.nojekyll
+    - uses: maxheld83/ghpages@v0.2.1
+      env:
+        BUILD_DIR: out
+        GH_PAT: ${{ secrets.GH_PAT }}

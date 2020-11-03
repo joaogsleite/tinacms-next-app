@@ -1,0 +1,101 @@
+name: Deploy api
+
+on:
+  workflow_dispatch:
+
+env:
+  SSH_CON: root@n1zes.tk
+  SSH_FOLDER: github-next-app/
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  DOMAIN: api.github-next-app.tk
+    
+jobs:
+  nginx:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup ssh agent
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        echo "Host *
+          StrictHostKeyChecking no" > ~/.ssh/config
+        chmod 700 ~/.ssh
+        chmod 600 ~/.ssh/id_rsa
+        chmod 644 ~/.ssh/config
+    - name: Setup nginx
+      run: |
+        scp nginx.conf $SSH_CON:devops/conf.d/$DOMAIN.conf
+        ssh $SSH_CON "
+          echo \"
+        server {
+          include /include.conf;
+          server_name $DOMAIN;
+          location / {
+            proxy_pass  http://github-next-app;
+            proxy_set_header    Host                $http_host;
+            proxy_set_header    X-Real-IP           $remote_addr;
+            proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+            proxy_set_header    X-Forwarded-Proto   https;
+          }
+        }
+          \" > ./devops/conf.d/$DOMAIN.conf
+          ./devops/reload.sh
+        "
+  nodejs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup ssh agent
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        echo "Host *
+          StrictHostKeyChecking no" > ~/.ssh/config
+        chmod 700 ~/.ssh
+        chmod 600 ~/.ssh/id_rsa
+        chmod 644 ~/.ssh/config
+    - name: Init project
+      run: |
+        ssh $SSH_CON "mkdir -p $SSH_FOLDER"
+    - name: Send files
+      run: |
+        ssh $SSH_CON "
+          rm -rf $SSH_FOLDER/
+        "
+        tar czf - * | ssh $SSH_CON "cd $SSH_FOLDER/ && tar xvzf -"
+    - name: Starting docker container
+      run: |
+        ssh $SSH_CON "
+          cd $SSH_FOLDER
+          echo \"
+        version: '3.6'
+        services:
+          nodejs:
+            hostname: github-next-app.tk
+            container_name: github-next-app
+            image: node:12
+            user: node
+            environment:
+              - NODE_ENV=production
+            volumes:
+              - ./:./home/node/app
+            restart: unless-stopped
+            command: "npm install && npm run build && npm start"
+            networks:
+              - nginx
+            deploy:
+              resources:
+                limits:
+                  cpus: '0.5'
+                  memory: 500M
+        networks:
+          nginx:
+            external:
+              name: nginx
+          \" > docker-compose.yml
+          docker-compose down | true
+          docker-compose up -d
+        "
