@@ -1,3 +1,6 @@
+import { InlineForm, InlineText } from 'react-tinacms-inline'
+import { usePlugin } from 'tinacms'
+import { useGithubJsonForm } from 'react-tinacms-github'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 
@@ -5,8 +8,16 @@ import { getGithubPreviewProps, parseJson } from 'next-tinacms-github'
 import { GetStaticProps } from 'next'
 
 export default function Home({ file }) {
-  const data = file.data
+  const formOptions = {
+    label: 'Home Page',
+    fields: [
+      { name: 'title', component: 'text' }
+    ],
+  }
+  const [data, form] = useGithubJsonForm(file, formOptions)
+  usePlugin(form)
   return (
+    <InlineForm form={form}>
     <div className={styles.container}>
       <Head>
         <title>Create Next App</title>
@@ -15,7 +26,7 @@ export default function Home({ file }) {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          {data.title}
+          <InlineText name="title" />
         </h1>
 
         <p className={styles.description}>
@@ -65,6 +76,7 @@ export default function Home({ file }) {
         </a>
       </footer>
     </div>
+    </InlineForm>
   )
 }
 
