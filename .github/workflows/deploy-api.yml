@@ -90,6 +90,7 @@ jobs:
             container_name: github-next-app
             image: node:12
             user: node
+            working_dir: /home/node/app
             environment:
               - NODE_ENV=production
             volumes:
