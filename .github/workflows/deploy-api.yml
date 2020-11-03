@@ -95,7 +95,7 @@ jobs:
             volumes:
               - ./:./home/node/app
             restart: unless-stopped
-            command: "npm install && npm run build && npm start"
+            command: \\\"npm install && npm run build && npm start\\\"
             networks:
               - nginx
             deploy:
