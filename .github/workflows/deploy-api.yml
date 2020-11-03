@@ -31,7 +31,6 @@ jobs:
         chmod 644 ~/.ssh/config
     - name: Setup nginx
       run: |
-        scp nginx.conf $SSH_CON:devops/conf.d/$DOMAIN.conf
         ssh $SSH_CON "
           echo \"
         server {
