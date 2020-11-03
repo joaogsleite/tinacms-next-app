@@ -8,6 +8,11 @@ env:
   SSH_FOLDER: github-next-app/
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   DOMAIN: api.github-next-app.tk
+  GITHUB_CLIENT_ID:  ${{ secrets.GH_CLIENT_ID }}
+  GITHUB_CLIENT_SECRET:  ${{ secrets.GH_CLIENT_SECRET }}
+  REPO_FULL_NAME: joaogsleite/tinacms-next-app
+  BASE_BRANCH: master
+  SIGNING_KEY: ${{ secrets.SIGNING_KEY }
     
 jobs:
   nginx:
@@ -64,6 +69,14 @@ jobs:
       run: |
         ssh $SSH_CON "
           rm -rf $SSH_FOLDER/
+          mkdir -p $SSH_FOLDER/
+          echo \"
+        GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID
+        GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET
+        REPO_FULL_NAME=$REPO_FULL_NAME
+        BASE_BRANCH=$BASE_BRANCH
+        SIGNING_KEY=\\\"$SIGNING_KEY\\\"
+          \" > $SSH_FOLDER/.env
         "
         tar czf - * | ssh $SSH_CON "cd $SSH_FOLDER/ && tar xvzf -"
     - name: Starting docker container

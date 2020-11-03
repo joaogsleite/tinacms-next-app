@@ -6,6 +6,13 @@ on:
       - master
   workflow_dispatch:
 
+env:
+  GITHUB_CLIENT_ID:  ${{ secrets.GH_CLIENT_ID }}
+  GITHUB_CLIENT_SECRET:  ${{ secrets.GH_CLIENT_SECRET }}
+  REPO_FULL_NAME: joaogsleite/tinacms-next-app
+  BASE_BRANCH: master
+  SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+
 jobs:
   build:
 
