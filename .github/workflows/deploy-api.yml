@@ -93,7 +93,7 @@ jobs:
             environment:
               - NODE_ENV=production
             volumes:
-              - ./:./home/node/app
+              - ./:/home/node/app
             restart: unless-stopped
             command: \\\"npm install && npm run build && npm start\\\"
             networks:
