@@ -37,7 +37,7 @@ jobs:
         ssh $SSH_CON "
           cd $SSH_FOLDER
           sudo chmod -R 777 .
-          docker-compose exec nodejs bash -c "npm run build"
+          docker-compose exec -T nodejs bash -c "npm run build"
           docker-compose down
           docker-compose up -d
         "
