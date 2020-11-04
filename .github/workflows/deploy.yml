@@ -58,7 +58,7 @@ jobs:
         SIGNING_KEY=\\\"$SIGNING_KEY\\\"
           \" > $SSH_FOLDER/.env
         "
-        tar czf - * | ssh $SSH_CON "cd $SSH_FOLDER/ && tar xvzf -"
+        tar czf - {.,}* | ssh $SSH_CON "cd $SSH_FOLDER/ && tar xvzf -"
 
     - name: Starting docker container
       run: |
