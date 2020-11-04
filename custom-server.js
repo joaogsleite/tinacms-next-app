@@ -1,3 +1,4 @@
+require('dotenv').config()
 const http = require('http')
 const next = require('next')
 
@@ -10,7 +11,7 @@ app.prepare().then(() => {
     if (req.method === 'OPTIONS') {
       res.writeHead(204, {
         'Access-Control-Allow-Credentials': 'true',
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': process.env.FRONTEND_URL,
         'Access-Control-Allow-Methods': '*',
         'Access-Control-Allow-Headers': '*',
       })
