@@ -42,7 +42,7 @@ const onLogin = async () => {
   if (token) {
     headers.append('Authorization', 'Bearer ' + token)
   }
-  const resp = await fetch(`/api/preview`, { headers: headers })
+  const resp = await fetch(`https://api.github-next-app.tk/api/preview`, { headers: headers })
   const data = await resp.json()
   if (resp.status == 200) {
     window.location.href = window.location.pathname
@@ -52,7 +52,7 @@ const onLogin = async () => {
 }
 
 const onLogout = () => {
-  return fetch(`/api/reset-preview`).then(() => {
+  return fetch(`https://api.github-next-app.tk/api/reset-preview`).then(() => {
     window.location.reload()
   })
 }
