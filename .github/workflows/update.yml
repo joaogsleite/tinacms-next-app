@@ -19,6 +19,7 @@ jobs:
 
     - name: Send files
       run: |
+        ssh $SSH_CON "mkdir -p $SSH_FOLDER"
         tar czf - {.,}* | ssh $SSH_CON "cd $SSH_FOLDER/ && tar xvzf -"
 
     - name: Starting docker container
