@@ -20,6 +20,15 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install dependencies
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+      run: npm install
+    
+    - name: Build project
+      run: npm run build
+
     - name: Setup ssh agent
       run: |
         mkdir -p ~/.ssh
@@ -29,9 +38,11 @@ jobs:
         chmod 700 ~/.ssh
         chmod 600 ~/.ssh/id_rsa
         chmod 644 ~/.ssh/config
-    - name: Init project
+
+    - name: Init project folder
       run: |
         ssh $SSH_CON "mkdir -p $SSH_FOLDER"
+
     - name: Send files
       run: |
         ssh $SSH_CON "
@@ -46,6 +57,7 @@ jobs:
           \" > $SSH_FOLDER/.env
         "
         tar czf - * | ssh $SSH_CON "cd $SSH_FOLDER/ && tar xvzf -"
+
     - name: Starting docker container
       run: |
         ssh $SSH_CON "
@@ -63,7 +75,7 @@ jobs:
             volumes:
               - ./:/home/node/app
             restart: unless-stopped
-            command: bash -c \\\"npm install && npm run build && npm start\\\"
+            command: npm start
             networks:
               - nginx
             deploy:
