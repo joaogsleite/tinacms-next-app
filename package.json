@@ -3,12 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "server": "serve out",
     "dev": "next dev",
     "build": "next build",
     "export": "next export",
-    "start": "node custom-server.js",
-    "next:start": "next start"
+    "start": "next start"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
@@ -25,7 +23,6 @@
     "@types/node": "^14.14.6",
     "@types/react": "^16.9.55",
     "hygen-next-tinacms-github": "https://github.com/dwalkr/hygen-next-tinacms-github",
-    "serve": "^11.3.2",
     "typescript": "^4.0.5"
   }
 }

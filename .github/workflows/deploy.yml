@@ -60,8 +60,6 @@ jobs:
             image: node:12
             user: node
             working_dir: /home/node/app
-            environment:
-              - NODE_ENV=development
             volumes:
               - ./:/home/node/app
             restart: unless-stopped
