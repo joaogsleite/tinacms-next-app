@@ -44,6 +44,7 @@ jobs:
         BASE_BRANCH=$BASE_BRANCH
         SIGNING_KEY=\\\"$SIGNING_KEY\\\"
         API_BASE_URL=https://api.github-next-app.tk
+        FRONTEND_DOMAIN=github-next-app.tk
           \" > $SSH_FOLDER/.env
         "
         tar czf - * | ssh $SSH_CON "cd $SSH_FOLDER/ && tar xvzf -"
@@ -56,7 +57,7 @@ jobs:
         version: '3.6'
         services:
           nodejs:
-            hostname: github-next-app.tk
+            hostname: api.github-next-app.tk
             container_name: github-next-app
             image: node:12
             user: node
