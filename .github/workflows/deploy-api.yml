@@ -43,8 +43,8 @@ jobs:
         REPO_FULL_NAME=$REPO_FULL_NAME
         BASE_BRANCH=$BASE_BRANCH
         SIGNING_KEY=\\\"$SIGNING_KEY\\\"
-        API_BASE_URL=https://api.github-next-app.tk
-        FRONTEND_DOMAIN=github-next-app.tk
+        API_URL=https://api.github-next-app.tk
+        FRONTEND_URL=github-next-app.tk
           \" > $SSH_FOLDER/.env
         "
         tar czf - * | ssh $SSH_CON "cd $SSH_FOLDER/ && tar xvzf -"
