@@ -1,4 +1,4 @@
-name: Deploy api
+name: Deploy nodejs
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ env:
   SSH_CON: root@n1zes.tk
   SSH_FOLDER: github-next-app/
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  DOMAIN: api.github-next-app.tk
+  DOMAIN: github-next-app.tk
   GITHUB_CLIENT_ID:  ${{ secrets.GH_CLIENT_ID }}
   GITHUB_CLIENT_SECRET:  ${{ secrets.GH_CLIENT_SECRET }}
   REPO_FULL_NAME: joaogsleite/tinacms-next-app
@@ -43,8 +43,6 @@ jobs:
         REPO_FULL_NAME=$REPO_FULL_NAME
         BASE_BRANCH=$BASE_BRANCH
         SIGNING_KEY=\\\"$SIGNING_KEY\\\"
-        API_URL=https://api.github-next-app.tk
-        FRONTEND_URL=https://github-next-app.tk
           \" > $SSH_FOLDER/.env
         "
         tar czf - * | ssh $SSH_CON "cd $SSH_FOLDER/ && tar xvzf -"
@@ -57,7 +55,7 @@ jobs:
         version: '3.6'
         services:
           nodejs:
-            hostname: api.github-next-app.tk
+            hostname: github-next-app.tk
             container_name: github-next-app
             image: node:12
             user: node

@@ -4,12 +4,12 @@ import { EditLink } from '../components/EditLink'
 import '../styles/globals.css'
 
 const github = new GithubClient({
-  proxy: `${process.env.API_URL}/api/proxy-github`,
-  authCallbackRoute: `${process.env.API_URL}/api/create-github-access-token`,
+  proxy: '/api/proxy-github',
+  authCallbackRoute: '/create-github-access-token',
   clientId: process.env.GITHUB_CLIENT_ID,
-  baseRepoFullName: process.env.REPO_FULL_NAME, // e.g: tinacms/tinacms.org,
-  baseBranch: process.env.BASE_BRANCH, // e.g. 'master' or 'main' on newer repos
-  authScope: 'repo' // normally defaults to 'public_repo'
+  baseRepoFullName: process.env.REPO_FULL_NAME,
+  baseBranch: process.env.BASE_BRANCH,
+  authScope: 'repo'
 })
 
 export default function MyApp({ Component, pageProps }) {
@@ -42,7 +42,7 @@ const onLogin = async () => {
   if (token) {
     headers.append('Authorization', 'Bearer ' + token)
   }
-  const resp = await fetch(`${process.env.API_URL}/api/preview`, { headers: headers })
+  const resp = await fetch('/api/preview', { headers: headers })
   const data = await resp.json()
   if (resp.status == 200) {
     window.location.href = window.location.pathname
@@ -52,7 +52,7 @@ const onLogin = async () => {
 }
 
 const onLogout = () => {
-  return fetch(`${process.env.API_URL}/api/reset-preview`).then(() => {
+  return fetch('/api/reset-preview').then(() => {
     window.location.reload()
   })
 }

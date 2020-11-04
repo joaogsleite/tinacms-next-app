@@ -5,5 +5,3 @@ export default createAuthHandler(
   process.env.GITHUB_CLIENT_SECRET || "",
   process.env.SIGNING_KEY || ""
 )
-
-
