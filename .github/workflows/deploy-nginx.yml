@@ -1,0 +1,49 @@
+name: Deploy api
+
+on:
+  workflow_dispatch:
+
+env:
+  SSH_CON: root@n1zes.tk
+  SSH_FOLDER: github-next-app/
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  DOMAIN: api.github-next-app.tk
+  GITHUB_CLIENT_ID:  ${{ secrets.GH_CLIENT_ID }}
+  GITHUB_CLIENT_SECRET:  ${{ secrets.GH_CLIENT_SECRET }}
+  REPO_FULL_NAME: joaogsleite/tinacms-next-app
+  BASE_BRANCH: master
+  SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+    
+jobs:
+  nginx:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup ssh agent
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        echo "Host *
+          StrictHostKeyChecking no" > ~/.ssh/config
+        chmod 700 ~/.ssh
+        chmod 600 ~/.ssh/id_rsa
+        chmod 644 ~/.ssh/config
+    - name: Setup nginx
+      run: |
+        ssh $SSH_CON "
+          echo \"
+        server {
+          include /include.conf;
+          server_name $DOMAIN;
+          location / {
+            proxy_pass  http://github-next-app;
+            proxy_set_header    Host                \$http_host;
+            proxy_set_header    X-Real-IP           \$remote_addr;
+            proxy_set_header    X-Forwarded-For     \$proxy_add_x_forwarded_for;
+            proxy_set_header    X-Forwarded-Proto   https;
+          }
+        }
+          \" > ./devops/conf.d/$DOMAIN.conf
+          ./devops/reload.sh
+        "

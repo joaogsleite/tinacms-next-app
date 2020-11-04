@@ -4,8 +4,8 @@ import { EditLink } from '../components/EditLink'
 import '../styles/globals.css'
 
 const github = new GithubClient({
-  proxy: 'http://localhost:3000/api/proxy-github',
-  authCallbackRoute: 'http://localhost:3000/api/create-github-access-token',
+  proxy: 'https://api.github-next-app.tk/api/proxy-github',
+  authCallbackRoute: 'https://api.github-next-app.tk/api/create-github-access-token',
   clientId: process.env.GITHUB_CLIENT_ID,
   baseRepoFullName: process.env.REPO_FULL_NAME, // e.g: tinacms/tinacms.org,
   baseBranch: process.env.BASE_BRANCH, // e.g. 'master' or 'main' on newer repos
