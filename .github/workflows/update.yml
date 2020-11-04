@@ -17,6 +17,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Setup ssh agent
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        echo "Host *
+          StrictHostKeyChecking no" > ~/.ssh/config
+        chmod 700 ~/.ssh
+        chmod 600 ~/.ssh/id_rsa
+        chmod 644 ~/.ssh/config
+
     - name: Send files
       run: |
         ssh $SSH_CON "mkdir -p $SSH_FOLDER"
