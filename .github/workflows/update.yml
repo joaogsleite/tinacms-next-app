@@ -1,0 +1,32 @@
+name: Update
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  SSH_CON: root@n1zes.tk
+  SSH_FOLDER: github-next-app/
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+    
+jobs:
+  nodejs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Send files
+      run: |
+        tar czf - {.,}* | ssh $SSH_CON "cd $SSH_FOLDER/ && tar xvzf -"
+
+    - name: Starting docker container
+      run: |
+        ssh $SSH_CON "
+          cd $SSH_FOLDER
+          sudo chmod -R 777 .
+          docker-compose exec nodejs bash -c "npm run build"
+          docker-compose down
+          docker-compose up -d
+        "
