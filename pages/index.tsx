@@ -1,21 +1,21 @@
 import { InlineForm, InlineText } from 'react-tinacms-inline'
-import { usePlugin } from 'tinacms'
-import { useGithubJsonForm } from 'react-tinacms-github'
+import { useForm } from '../hooks/useForm'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 
-import { getGithubPreviewProps, parseJson } from 'next-tinacms-github'
 import { GetStaticProps } from 'next'
+import { parsePage } from '../services/github/static'
 
-export default function Home({ file }) {
-  const formOptions = {
+export default function Home(props) {
+  const formConfig = {
+    id: 'home',
     label: 'Home Page',
     fields: [
       { name: 'title', component: 'text' }
     ],
+    initialValues: props,
   }
-  const [data, form] = useGithubJsonForm(file, formOptions)
-  usePlugin(form)
+  const form = useForm(formConfig)
   return (
     <InlineForm form={form}>
     <div className={styles.container}>
@@ -80,26 +80,11 @@ export default function Home({ file }) {
   )
 }
 
-export const getStaticProps: GetStaticProps = async function({
-  preview,
-  previewData,
-}) {
-  if (preview) {
-    return getGithubPreviewProps({
-      ...previewData,
-      fileRelativePath: 'content/home.json',
-      parse: parseJson,
-    })
-  }
+export const getStaticProps: GetStaticProps = async function() {
+  const data = await parsePage('home')
   return {
     props: {
-      sourceProvider: null,
-      error: null,
-      preview: false,
-      file: {
-        fileRelativePath: 'content/home.json',
-        data: (await import('../content/home.json')).default,
-      },
-    },
+      ...data,
+    }
   }
 }
