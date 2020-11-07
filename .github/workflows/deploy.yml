@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 
 env:
+  DOMAIN: tinacms.leite.tk
   GITHUB_CLIENT_ID: a8c67fc925dfb56ca65e
   REPO_FULL_NAME: joaogsleite/tinacms-next-app
   BASE_BRANCH: master
@@ -25,6 +26,7 @@ jobs:
     - run: npm run build
     - run: npm run export
     - run: touch out/.nojekyll
+    - run: echo "$DOMAIN" > out/CNAME
     - uses: maxheld83/ghpages@v0.2.1
       env:
         BUILD_DIR: out
