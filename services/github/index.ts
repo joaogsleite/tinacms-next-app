@@ -1,11 +1,9 @@
 
 import { b64EncodeUnicode } from './encoding'
-import { request, proxyRequest } from './request'
+import { request, proxyRequest, clearToken } from './request'
 import './login'
 
-const {
-  REPO_FULL_NAME
-} = process.env
+const { REPO_FULL_NAME } = process.env;
 
 export function fetchPage(id: string) {
   const filename = `content/${id}.json`

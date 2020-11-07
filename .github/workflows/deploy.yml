@@ -1,95 +1,31 @@
 name: Deploy
 
 on:
+  push:
+    branches:
+      - master
   workflow_dispatch:
 
 env:
-  SSH_CON: root@n1zes.tk
-  SSH_FOLDER: github-next-app/
-  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  DOMAIN: github-next-app.tk
   GITHUB_CLIENT_ID:  ${{ secrets.GH_CLIENT_ID }}
-  GITHUB_CLIENT_SECRET:  ${{ secrets.GH_CLIENT_SECRET }}
   REPO_FULL_NAME: joaogsleite/tinacms-next-app
   BASE_BRANCH: master
-  SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-    
+
 jobs:
-  nodejs:
+  build:
+
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
-
-    - name: Setup node
-      uses: actions/setup-node@v1
+    - uses: actions/setup-node@v1
       with:
-        node-version: 12.x
-    
-    - name: Install dependencies
-      run: npm install
-    
-    - name: Build project
-      run: npm run build
-
-    - name: Setup ssh agent
-      run: |
-        mkdir -p ~/.ssh
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-        echo "Host *
-          StrictHostKeyChecking no" > ~/.ssh/config
-        chmod 700 ~/.ssh
-        chmod 600 ~/.ssh/id_rsa
-        chmod 644 ~/.ssh/config
-
-    - name: Init project folder
-      run: |
-        ssh $SSH_CON "mkdir -p $SSH_FOLDER"
-
-    - name: Send files
-      run: |
-        ssh $SSH_CON "
-          rm -rf $SSH_FOLDER/
-          mkdir -p $SSH_FOLDER/
-          echo \"
-        GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID
-        GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET
-        REPO_FULL_NAME=$REPO_FULL_NAME
-        BASE_BRANCH=$BASE_BRANCH
-        SIGNING_KEY=\\\"$SIGNING_KEY\\\"
-          \" > $SSH_FOLDER/.env
-        "
-        tar czf - {.,}* | ssh $SSH_CON "cd $SSH_FOLDER/ && tar xvzf -"
-
-    - name: Starting docker container
-      run: |
-        ssh $SSH_CON "
-          cd $SSH_FOLDER
-          sudo chmod -R 777 .
-          echo \"
-        version: '3.6'
-        services:
-          nodejs:
-            hostname: github-next-app.tk
-            container_name: github-next-app
-            image: node:12
-            user: node
-            working_dir: /home/node/app
-            volumes:
-              - ./:/home/node/app
-            restart: unless-stopped
-            command: npm start
-            networks:
-              - nginx
-            deploy:
-              resources:
-                limits:
-                  cpus: '0.5'
-                  memory: 500M
-        networks:
-          nginx:
-            external:
-              name: nginx
-          \" > docker-compose.yml
-          docker-compose down | true
-          docker-compose up -d
-        "
+        node-version: '12.x'
+    - run: npm install
+    - run: npm run build
+    - run: npm run export
+    - run: touch out/.nojekyll
+    - uses: maxheld83/ghpages@v0.2.1
+      env:
+        BUILD_DIR: out
+        GH_PAT: ${{ secrets.GH_PAT }}
