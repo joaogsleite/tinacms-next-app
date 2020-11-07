@@ -26,9 +26,9 @@ export function request(
   body?: any,
   config: Partial<Request> = {}
 ) {
-  (config as any).headers = {
-    ...(config.headers || {}),
-    Authorization: `token ${token}`
+  (config as any).headers = config.headers || new Headers()
+  if (token) {
+    config.headers.append('Authorization', `token ${token}`)
   }
   url = url.startsWith('http')
     ? url
@@ -71,11 +71,9 @@ export function proxyRequest(
   body?: any,
   config: Partial<Request> = {}
 ) {
-  (config as any).headers = {
-    ...(config.headers || {}),
-    origin: 'http://localhost:3000',
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
+  (config as any).headers = config.headers || new Headers()
+  config.headers.append('origin', 'http://localhost')
+  config.headers.append('Content-Type', 'application/x-www-form-urlencoded')
   url = url.startsWith('http')
     ? url
     : `${BASE_URL}${url}`
