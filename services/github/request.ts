@@ -9,8 +9,10 @@ if (process.browser) {
 let token: string | undefined = localStorage?.getItem('GITHUB_ACCESS_TOKEN')
 
 export function setToken(newToken: string) {
-  localStorage?.setItem('GITHUB_ACCESS_TOKEN', newToken)
-  token = newToken
+  if (newToken) {
+    localStorage?.setItem('GITHUB_ACCESS_TOKEN', newToken)
+    token = newToken
+  }
 }
 
 export function clearToken() {
@@ -24,11 +26,9 @@ export function request(
   body?: any,
   config: Partial<Request> = {}
 ) {
-  if (token) {
-    (config as any).headers = {
-      ...(config.headers || {}),
-      Authorization: `token ${token}`
-    }
+  (config as any).headers = {
+    ...(config.headers || {}),
+    Authorization: `token ${token}`
   }
   url = url.startsWith('http')
     ? url
@@ -42,23 +42,26 @@ export function request(
     ),
     ...config
   }).then((res) => {
-    return res.text()
-  }).then((text) => {
-    try {
-      return JSON.parse(text)
-    } catch {
-      if (text.includes('&')) {
-        const result = {}
-        text.split('&').forEach((part) => {
-          const [key, value] = part.split('=')
-          result[key] = isNaN(value as any)
-            ? decodeURIComponent(value)
-            : Number(value)
-        })
-        return result
-      }
-      return text
+    if (!res.ok) {
+      throw res
     }
+    return res.text().then((text) => {
+      try {
+        return JSON.parse(text)
+      } catch {
+        if(res.headers.get('Content-type') === 'application/x-www-form-urlencoded; charset=utf-8') {
+          const result = {}
+          text.split('&').forEach((part) => {
+            const [key, value] = part.split('=')
+            result[key] = isNaN(value as any)
+              ? decodeURIComponent(value)
+              : Number(value)
+          })
+          return result
+        }
+        console.log('text', text)
+      }
+    })
   })
 }
 
@@ -76,5 +79,8 @@ export function proxyRequest(
   url = url.startsWith('http')
     ? url
     : `${BASE_URL}${url}`
+  body = body && Object.keys(body).map((key) => {
+    return `${key}=${body[key]}`
+  }).join('&')
   return request(method, `https://cors-anywhere.herokuapp.com/${url}`, body, config)
 }
