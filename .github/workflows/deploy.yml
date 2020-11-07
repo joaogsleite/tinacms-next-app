@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  GITHUB_CLIENT_ID:  ${{ secrets.GH_CLIENT_ID }}
+  GITHUB_CLIENT_ID: a8c67fc925dfb56ca65e
   REPO_FULL_NAME: joaogsleite/tinacms-next-app
   BASE_BRANCH: master
 
