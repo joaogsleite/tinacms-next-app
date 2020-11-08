@@ -3,7 +3,9 @@ div[class^="StyledToolbar-"] {
     display: none;
   }
   *[class^="AlignLeft-"] {
-    display: none;
+    & > button:first-child {
+      display: none;
+    }
   }
   *[class^="AlignRight-"] {
     button > span {

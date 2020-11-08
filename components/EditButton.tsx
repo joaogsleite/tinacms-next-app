@@ -20,7 +20,6 @@ export const EditButton = () => {
 
   const [code, setCode] = useState<string>()
   const [busy, setBusy] = useState(false)
-  const [enabled, setEnabled] = useState(false)
 
   const cancel = useCallback(() => {
     setCode(undefined)
@@ -32,8 +31,6 @@ export const EditButton = () => {
     if (!await isLoggedIn()) {
       const { user_code } = await generateCodes()
       setCode(user_code)
-    } else {
-      setEnabled(true)
     }
   }, [cms])
 
@@ -41,52 +38,49 @@ export const EditButton = () => {
     setBusy(true)
     try {
       await startLogin()
-      setEnabled(true)
       setCode('')
     } catch {
       setBusy(false)
-      setEnabled(false)
       cms.disable()
     }
-  }, [cms, setBusy, setEnabled])
-  
-  if (!enabled) {
-    if (code) {
-      return (
-        <StyleReset>
-          <Modal>
-            <ModalPopup>
-              <ModalHeader close={cancel}>
-                Authorization required
-              </ModalHeader>
-              <ModalBody padded>
-                <p>Copy the code and click on the login button.</p>
-                <pre className={styles.userCode}>
-                  {code}
-                </pre>
-              </ModalBody>
-              <ModalActions>
-                <Button
-                  primary={true}
-                  onClick={openWindow}
-                  busy={busy}
-                  disabled={busy}
-                >
-                  {busy && <LoadingDots />}
-                  {!busy && 'Login'}
-                </Button>
-              </ModalActions>
-            </ModalPopup>
-          </Modal>
-        </StyleReset>
-      ) 
-    } else {
-      return (
-        <div className={styles.editButton} onClick={startEditing}>
-          <EditIcon />
-        </div>
-      )
-    }
+  }, [cms, setBusy])
+
+  if (code) {
+    return (
+      <StyleReset>
+        <Modal>
+          <ModalPopup>
+            <ModalHeader close={cancel}>
+              Authorization required
+            </ModalHeader>
+            <ModalBody padded>
+              <p>Copy the code and click on the login button.</p>
+              <pre className={styles.userCode}>
+                {code}
+              </pre>
+            </ModalBody>
+            <ModalActions>
+              <Button
+                primary={true}
+                onClick={openWindow}
+                busy={busy}
+                disabled={busy}
+              >
+                {busy && <LoadingDots />}
+                {!busy && 'Login'}
+              </Button>
+            </ModalActions>
+          </ModalPopup>
+        </Modal>
+      </StyleReset>
+    ) 
+  }
+  if (cms.disabled) {
+    return (
+      <div className={styles.editButton} onClick={startEditing}>
+        <EditIcon />
+      </div>
+    )
   }
   return <></>
 }

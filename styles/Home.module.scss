@@ -41,8 +41,21 @@
   text-align: center;
 }
 
+.list {
+  list-style: none;
+  border-bottom: 1px solid #ddd;
+  padding: 20px;
+  margin: 0 40px;
+  width: calc(100% - 80px);
+  text-align: left;
+  a {
+    color: blue;
+  }
+}
+
 .body {
-  margin-top: 50px;
+  width: 100%;
+  padding: 40px;
   line-height: 1.5;
   font-size: 1.5rem;
 }
