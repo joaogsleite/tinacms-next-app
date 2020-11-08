@@ -49,6 +49,6 @@ export async function getStaticPaths() {
   const pages = await getPages('posts')
   return { 
     paths: pages.map((slug) => ({ params: { slug }})),
-    fallback: true
+    fallback: false
   }
 }
