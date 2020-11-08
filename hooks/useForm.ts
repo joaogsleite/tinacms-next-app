@@ -3,7 +3,7 @@ import { FormOptions } from '@tinacms/forms'
 import { usePlugin, useForm as useTinaForm, useCMS } from 'tinacms'
 import { fetchPage, savePage } from '../services/github'
 
-export function useForm<T> (id: string, initialValues: any, defaultData?: any = {}) {
+export function useForm<T> (id: string, initialValues: any, defaultData: any = {}) {
   
   const cms = useCMS()
   
