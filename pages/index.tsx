@@ -30,13 +30,13 @@ export default function Home(props) {
           </InlineWysiwyg>
         </div>
         <ul className={styles.list}>
-          <li>
-            {posts.map((post) => 
+          {posts.map((post) => 
+            <li>
               <Link href={`/posts/${post.slug}`}>
                 {post.title}
               </Link>
-            )}
-          </li>
+            </li>
+          )}
         </ul>
       </main>
 

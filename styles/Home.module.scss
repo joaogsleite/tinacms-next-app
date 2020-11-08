@@ -43,11 +43,14 @@
 
 .list {
   list-style: none;
-  border-bottom: 1px solid #ddd;
-  padding: 20px;
-  margin: 0 40px;
+  margin: 0;
+  padding: 0;
   width: calc(100% - 80px);
   text-align: left;
+  li {
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+  }
   a {
     color: blue;
   }
