@@ -25,7 +25,7 @@ export const PostCreatorPlugin = {
     },
   ],
   onSubmit(values) {
-    location.replace(`/posts/new?slug=${values.slug}`);
+    location.href = `/posts/new?slug=${values.slug}`
   }
 }
 

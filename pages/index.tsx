@@ -30,8 +30,8 @@ export default function Home(props) {
           </InlineWysiwyg>
         </div>
         <ul className={styles.list}>
-          {posts.map((post) => 
-            <li>
+          {posts.map((post, index) => 
+            <li key={index}>
               <Link href={`/posts/${post.slug}`}>
                 {post.title}
               </Link>
