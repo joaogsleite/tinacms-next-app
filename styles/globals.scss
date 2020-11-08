@@ -1,5 +1,6 @@
 html,
 body {
+  overflow-x: hidden;
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
@@ -15,12 +16,4 @@ a {
   box-sizing: border-box;
 }
 
-button {
-  outline: none;
-  background: #f0f0f0;
-  padding: 10px 15px;
-  border: none;
-  box-shadow: 0 2px 2px rgba(0,0,0,0.2);
-  border-radius: 5px;
-  cursor: pointer;
-}
+@import "./ToolbarWidget.scss";

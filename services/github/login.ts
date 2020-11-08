@@ -1,9 +1,16 @@
-import { request, proxyRequest, setToken } from "./request"
+import { request, proxyRequest, setToken, clearToken } from "./request"
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const REPO_FULL_NAME = process.env.REPO_FULL_NAME
 
 let device_code
+
+export function logout() {
+  clearToken()
+  return new Promise((resolve) => {
+    setTimeout(resolve, 500)
+  })
+}
 
 export async function isLoggedIn() {
   try {

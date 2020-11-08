@@ -14,9 +14,13 @@
     "next-tinacms-github": "^0.32.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-sanitized-html": "^2.0.0",
+    "react-tinacms-editor": "^0.32.1",
     "react-tinacms-github": "^0.32.0",
     "react-tinacms-inline": "^0.32.0",
     "recost": "^1.0.2",
+    "sanitize-html": "^2.1.2",
+    "sass": "^1.29.0",
     "styled-components": "^5.2.1",
     "tinacms": "^0.32.0"
   },

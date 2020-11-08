@@ -1,0 +1,35 @@
+div[class^="StyledToolbar-"] {
+  *[class^="MoreActionsButton-"] {
+    display: none;
+  }
+  *[class^="AlignLeft-"] {
+    display: none;
+  }
+  *[class^="AlignRight-"] {
+    button > span {
+      display: block !important;    
+    }
+    *[class^="Status-"] {
+      padding-right: 20px;
+      *[class^="FieldLabel-"] {
+        display: none !important;
+      }
+    }
+    *[class^="Actions-"] {
+      button:first-child {
+        span {
+          display: none !important;
+        }
+      }
+    }
+    & > * {
+      order: 1;
+    }
+  }
+  *[class^="WidgetsContainer-"] {
+    box-shadow: none;
+    border: none;
+    order: 2;
+    padding: 0 15px 0 20px;
+  }
+}
