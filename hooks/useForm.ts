@@ -1,4 +1,4 @@
-import {useEffect } from 'react'
+import {useEffect, useState } from 'react'
 import { FormOptions } from '@tinacms/forms'
 import { usePlugin, useForm as useTinaForm, useCMS } from 'tinacms'
 import { fetchPage, savePage } from '../services/github'
@@ -25,7 +25,7 @@ export function useForm<T> (id: string, initialValues: any, defaultData: any = {
         form.updateInitialValues(data)
       })
     }
-  }, [cms.enabled])
+  }, [cms.enabled, form.id])
 
   return form
 }

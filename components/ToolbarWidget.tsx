@@ -11,6 +11,7 @@ function ToolbarWidgetComponent() {
   const handleClick = useCallback(async () => {
     setBusy(true)
     await logout()
+    localStorage?.removeItem('TINACMS_ENABLED')
     cms.disable()
   }, [])
   return <>

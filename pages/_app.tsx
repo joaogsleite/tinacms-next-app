@@ -5,7 +5,7 @@ import '../styles/globals.scss'
 export default function MyApp({ Component, pageProps }) {
   return (
     <RecostProvider>
-      <TinaProvider enabled={pageProps.cmsEnabled}>
+      <TinaProvider>
         <Component {...pageProps} />
       </TinaProvider>
     </RecostProvider>
