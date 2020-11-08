@@ -5,13 +5,24 @@ import './login'
 
 const { REPO_FULL_NAME } = process.env;
 
-export function fetchPage(id: string) {
+export async function fetchPage(id: string, defaultData: any = {}) {
   const filename = `content/${id}.json`
   const headers = new Headers()
   headers.append('pragma', 'no-cache')
   headers.append('cache-control', 'no-cache')
   const url = `https://raw.githubusercontent.com/${REPO_FULL_NAME}/master/${filename}`
-  return proxyRequest('GET', url, undefined, { headers })
+  let data
+  try {
+    data = await proxyRequest('GET', url, undefined, { headers }) || {}
+  } catch {
+    data = {}
+  }
+  Object.keys(defaultData).forEach((key) => {
+    if (!data[key]) {
+      data[key] = defaultData[key]
+    }
+  })
+  return data
 }
 
 export async function savePage(id: string, data: any) {

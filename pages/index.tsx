@@ -1,50 +1,47 @@
+import Link from 'next/link'
 import SanitizedHTML from 'react-sanitized-html'
-import { InlineForm, InlineText } from 'react-tinacms-inline'
+import { InlineText } from 'react-tinacms-inline'
 import { InlineWysiwyg } from 'react-tinacms-editor'
-import { useForm } from '../hooks/useForm'
+
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import styles from '../styles/Home.module.scss'
 
 import { GetStaticProps } from 'next'
-import { parsePage } from '../services/github/static'
+import { parsePage, getPages } from '../services/github/static'
+import { InlineForm } from '../components/InlineForm'
 
 export default function Home(props) {
-  const formConfig = {
-    id: 'home',
-    label: 'Home Page',
-    fields: [
-      { name: 'title', component: 'text' }
-    ],
-    initialValues: props,
-  }
-  const [data, form] = useForm(formConfig)
+  const posts = props.posts
   return (
-    <InlineForm form={form}>
+    <InlineForm id="home" data={props}>
     <div className={styles.container}>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+  
       <main className={styles.main}>
         <h1 className={styles.title}>
           <InlineText name="title" />
         </h1>
         <div className={styles.body}>
           <InlineWysiwyg name="body" format="html">
-            <SanitizedHTML html={data.body} />
+            <SanitizedHTML html={props.body} />
           </InlineWysiwyg>
         </div>
+        <ul className={styles.list}>
+          <li>
+            {posts.map((post) => 
+              <Link href={`/posts/${post.slug}`}>
+                {post.title}
+              </Link>
+            )}
+          </li>
+        </ul>
       </main>
 
       <footer className={styles.footer}>
-        <a
-          href="#"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by joaogsleite
-        </a>
+        Powered by&nbsp; <b>joaogsleite</b>
       </footer>
     </div>
     </InlineForm>
@@ -52,10 +49,14 @@ export default function Home(props) {
 }
 
 export const getStaticProps: GetStaticProps = async function() {
-  const data = await parsePage('home')
-  return {
-    props: {
-      ...data,
+  const props = await parsePage('home')
+  const posts = await getPages('posts')
+  props.posts = await Promise.all(posts.map(async (slug) => {
+    const post = await parsePage('posts', slug)
+    return {
+      slug,
+      ...post,
     }
-  }
+  }))
+  return { props }
 }

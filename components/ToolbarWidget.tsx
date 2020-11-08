@@ -1,9 +1,9 @@
 import { ExitIcon } from '@tinacms/icons'
-import { logout } from '../services/github/login'
+import { useCallback, useState } from 'react'
 import { LoadingDots } from '@tinacms/react-forms'
 import { IconButton  } from '@tinacms/styles'
-import { useCallback, useState } from 'react'
 import { useCMS } from 'tinacms'
+import { logout } from '../services/github/login'
 
 function ToolbarWidgetComponent() {
   const [busy, setBusy] = useState(false)
@@ -16,7 +16,7 @@ function ToolbarWidgetComponent() {
   return <>
     {busy
       ? <LoadingDots color="#2296fe" />
-      : <IconButton onButton busy={busy} disabled={busy} onClick={handleClick}>
+      : <IconButton busy={busy} disabled={busy} onClick={handleClick}>
           <ExitIcon />
         </IconButton>
     }
@@ -25,7 +25,7 @@ function ToolbarWidgetComponent() {
 
 export const ToolbarWidget = {
   __type: 'toolbar:widget',
-  name: 'logout',
-  weight: 100000,
+  name: 'toolbarwidget',
+  weight: 1,
   component: ToolbarWidgetComponent,
 }
