@@ -1,4 +1,5 @@
 {
-  "title": "Example post",
-  "body": "Tempora modi sit eius tempora etincidunt dolore."
+  "title": "Example2 post",
+  "body": "Tempora modi sit eius tempora etincidunt dolore.",
+  "slug": "example"
 }
