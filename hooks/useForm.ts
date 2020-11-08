@@ -13,7 +13,7 @@ export function useForm<T> (formConfig: Partial<FormOptions<T>>) {
       await savePage(form.id, data)
     }
   }
-  const [_, form] = useTinaForm(config as FormOptions<T>)
+  const [data, form] = useTinaForm(config as FormOptions<T>)
 
   usePlugin(form)
 
@@ -26,5 +26,5 @@ export function useForm<T> (formConfig: Partial<FormOptions<T>>) {
     }
   }, [cms.enabled])
 
-  return form
+  return [data, form]
 }
