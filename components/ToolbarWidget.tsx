@@ -1,9 +1,10 @@
+import LocalStorage from '../services/localStorage'
 import { ExitIcon } from '@tinacms/icons'
 import { useCallback, useState } from 'react'
 import { LoadingDots } from '@tinacms/react-forms'
 import { IconButton  } from '@tinacms/styles'
 import { useCMS } from 'tinacms'
-import { logout } from '../services/github/login'
+import { logout } from '../services/login'
 
 function ToolbarWidgetComponent() {
   const [busy, setBusy] = useState(false)
@@ -11,7 +12,7 @@ function ToolbarWidgetComponent() {
   const handleClick = useCallback(async () => {
     setBusy(true)
     await logout()
-    localStorage?.removeItem('TINACMS_ENABLED')
+    LocalStorage.cmsEnabled = false
     cms.disable()
   }, [])
   return <>

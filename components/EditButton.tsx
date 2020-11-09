@@ -1,3 +1,4 @@
+import LocalStorage from '../services/localStorage'
 import { EditIcon } from '@tinacms/icons'
 import { StyleReset, Button } from '@tinacms/styles'
 import { LoadingDots } from '@tinacms/react-forms'
@@ -10,7 +11,7 @@ import {
   ModalBody,
   ModalActions,
 } from 'tinacms'
-import { isLoggedIn, generateCodes, startLogin } from '../services/github/login'
+import { isLoggedIn, generateCodes, startLogin } from '../services/login'
 
 import styles from '../styles/EditButton.module.css'
 
@@ -28,6 +29,7 @@ export const EditButton = () => {
 
   const startEditing = useCallback(async () => {
     cms.enable()
+    LocalStorage.cmsEnabled = true
     if (!await isLoggedIn()) {
       const { user_code } = await generateCodes()
       setCode(user_code)
@@ -42,6 +44,7 @@ export const EditButton = () => {
     } catch {
       setBusy(false)
       cms.disable()
+      LocalStorage.cmsEnabled = false
     }
   }, [cms, setBusy])
 
