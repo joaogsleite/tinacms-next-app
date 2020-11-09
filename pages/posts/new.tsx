@@ -1,23 +1,22 @@
-import queryString from 'query-string'
-import SanitizedHTML from 'react-sanitized-html'
+import QueryString from '../../services/queryString'
 import { InlineText } from 'react-tinacms-inline'
-import { InlineWysiwyg } from 'react-tinacms-editor'
 
 import Head from 'next/head'
 import styles from '../../styles/Home.module.scss'
 
 import { GetStaticProps } from 'next'
 import { InlineForm } from '../../components/InlineForm'
+import { InlineHTML } from '../../components/InlineHTML'
+import { slugify } from '../../services/content'
 import { useEffect, useState } from 'react'
-import { useCMS } from 'tinacms'
 
 export const PostCreatorPlugin = {
   __type: 'content-creator',
   name: 'Blog post',
   fields: [
     {
-      label: 'Slug',
-      name: 'slug',
+      label: 'Title',
+      name: 'title',
       component: 'text',
       validation(value) {
         if (!value) return "Required."
@@ -25,23 +24,20 @@ export const PostCreatorPlugin = {
     },
   ],
   onSubmit(values) {
-    location.href = `/posts/new?slug=${values.slug}`
+    location.href = `/posts/new?title=${values.title}`
   }
 }
 
 
+
 export default function Post(props) {
-  const slug = process.browser && 
-      queryString.parse(window.location.search).slug
-  const cms = useCMS()
-  useEffect(() => {
-    cms.enable()
-  }, [])
-  const defaultData = {
-    title: slug
-  }
+  const [data, setData] = useState<any>({})
+  useEffect(() => setData({ 
+    ...props, 
+    title: QueryString().title
+  }), [setData])
   return (
-    <InlineForm id={`posts/${slug}`} data={props} defaultData={defaultData}>
+    <InlineForm id={`posts/${slugify(data.title)}`} data={data}>
     <div className={styles.container}>
       <Head>
         <title>{props.title}</title>
@@ -53,9 +49,7 @@ export default function Post(props) {
           <InlineText name="title" />
         </h1>
         <div className={styles.body}>
-          <InlineWysiwyg name="body" format="html">
-            <SanitizedHTML html={props.body} />
-          </InlineWysiwyg>
+          <InlineHTML name="body" data={props} />
         </div>
       </main>
 
@@ -67,9 +61,8 @@ export default function Post(props) {
   )
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async () => {
   const props = {
-    cmsEnabled: true,
     body: 'Replace this text...'
   }
   return {  props }

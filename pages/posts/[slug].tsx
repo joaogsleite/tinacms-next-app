@@ -1,15 +1,12 @@
-import queryString from 'query-string'
-import Router from 'next/router'
-import SanitizedHTML from 'react-sanitized-html'
 import { InlineText } from 'react-tinacms-inline'
-import { InlineWysiwyg } from 'react-tinacms-editor'
 
 import Head from 'next/head'
 import styles from '../../styles/Home.module.scss'
 
 import { GetStaticProps } from 'next'
-import { getPages, parsePage } from '../../services/github/static'
+import * as contentService from '../../services/content'
 import { InlineForm } from '../../components/InlineForm'
+import { InlineHTML } from '../../components/InlineHTML'
 
 export default function Post(props) {
   return (
@@ -25,9 +22,7 @@ export default function Post(props) {
           <InlineText name="title" />
         </h1>
         <div className={styles.body}>
-          <InlineWysiwyg name="body" format="html">
-            <SanitizedHTML html={props.body} />
-          </InlineWysiwyg>
+          <InlineHTML name="body" data={props} />
         </div>
       </main>
 
@@ -40,13 +35,13 @@ export default function Post(props) {
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const props = await parsePage('posts', params.slug as string)
+  const props = await contentService.fetchPage(`posts/${params.slug}`)
   props.slug = params.slug
   return { props }
 }
 
 export async function getStaticPaths() {
-  const pages = await getPages('posts')
+  const pages = await contentService.getPages('posts')
   return { 
     paths: pages.map((slug) => ({ params: { slug }})),
     fallback: false

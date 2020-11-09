@@ -1,25 +1,27 @@
-import { request, proxyRequest, setToken, clearToken } from "./request"
+import Request from './request'
+import LocalStorage from './localStorage'
+import * as github from './github'
 
+const BASE_URL = 'https://cors-anywhere.herokuapp.com/https://api.github.com'
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
-const REPO_FULL_NAME = process.env.REPO_FULL_NAME
+const BASE_HEADERS = {
+  'origin': 'http://localhost',
+  'Content-Type': 'application/x-www-form-urlencoded'
+}
+
+const githubApi = new Request(BASE_URL, BASE_HEADERS)
 
 let device_code
 
+export function isLoggedIn() {
+  return github.isTokenValid()
+}
+
 export function logout() {
-  clearToken()
+  LocalStorage.token = undefined
   return new Promise((resolve) => {
     setTimeout(resolve, 500)
   })
-}
-
-export async function isLoggedIn() {
-  try {
-    const body = { is_template: false }
-    await request('PATCH', `/repos/${REPO_FULL_NAME}`, body)
-    return true
-  } catch (error) {
-    return false
-  }
 }
 
 export async function generateCodes() {
@@ -28,7 +30,7 @@ export async function generateCodes() {
     'scope': 'repo'
   }
   const url = 'https://github.com/login/device/code'
-  const res = await proxyRequest('POST', url, body)
+  const res = await githubApi.post(url, body)
   device_code = res.device_code
   const user_code = res.user_code
   console.log({ device_code, user_code })
@@ -49,9 +51,9 @@ export function startLogin() {
         }
         const url = 'https://github.com/login/oauth/access_token'
         try {
-          const res = await proxyRequest('POST', url, body)
+          const res = await githubApi.post(url, body)
           if (res.access_token) {
-            setToken(res.access_token)
+            LocalStorage.token = res.access_token
             resolve()
           } else {
             reject()

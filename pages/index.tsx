@@ -1,14 +1,13 @@
 import Link from 'next/link'
-import SanitizedHTML from 'react-sanitized-html'
 import { InlineText } from 'react-tinacms-inline'
-import { InlineWysiwyg } from 'react-tinacms-editor'
 
 import Head from 'next/head'
 import styles from '../styles/Home.module.scss'
 
 import { GetStaticProps } from 'next'
-import { parsePage, getPages } from '../services/github/static'
 import { InlineForm } from '../components/InlineForm'
+import { InlineHTML } from '../components/InlineHTML'
+import * as contentService from '../services/content'
 
 export default function Home(props) {
   const posts = props.posts
@@ -25,9 +24,7 @@ export default function Home(props) {
           <InlineText name="title" />
         </h1>
         <div className={styles.body}>
-          <InlineWysiwyg name="body" format="html">
-            <SanitizedHTML html={props.body} />
-          </InlineWysiwyg>
+          <InlineHTML name="body" data={props} />
         </div>
         <ul className={styles.list}>
           {posts.map((post, index) => 
@@ -49,10 +46,10 @@ export default function Home(props) {
 }
 
 export const getStaticProps: GetStaticProps = async function() {
-  const props = await parsePage('home')
-  const posts = await getPages('posts')
+  const props = await contentService.fetchPage('home')
+  const posts = await contentService.getPages('posts')
   props.posts = await Promise.all(posts.map(async (slug) => {
-    const post = await parsePage('posts', slug)
+    const post = await contentService.fetchPage(`posts/${slug}`)
     return {
       slug,
       ...post,
