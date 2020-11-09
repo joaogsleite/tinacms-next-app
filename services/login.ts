@@ -2,11 +2,12 @@ import Request from './request'
 import LocalStorage from './localStorage'
 import * as github from './github'
 
-const BASE_URL = 'https://cors-anywhere.herokuapp.com/https://api.github.com'
+const BASE_URL = 'https://cors-anywhere.herokuapp.com/https://github.com'
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const BASE_HEADERS = {
   'origin': 'http://localhost',
-  'Content-Type': 'application/x-www-form-urlencoded'
+  //'Content-Type': 'application/x-www-form-urlencoded'
+  'Content-Type': 'application/json'
 }
 
 const githubApi = new Request(BASE_URL, BASE_HEADERS)
@@ -29,7 +30,7 @@ export async function generateCodes() {
     'client_id': GITHUB_CLIENT_ID,
     'scope': 'repo'
   }
-  const url = 'https://github.com/login/device/code'
+  const url = '/login/device/code'
   const res = await githubApi.post(url, body)
   device_code = res.device_code
   const user_code = res.user_code
@@ -39,8 +40,7 @@ export async function generateCodes() {
 
 export function startLogin() {
   return new Promise((resolve, reject) => {
-    const url = 'https://github.com/login/device'
-    const popup = window.open(url, '', "width=400,height=600")
+    const popup = window.open('https://github.com/login/device', '', "width=400,height=600")
     const timer = setInterval(async () => { 
       if(popup.closed) {
         clearInterval(timer);
@@ -49,7 +49,7 @@ export function startLogin() {
           client_id: GITHUB_CLIENT_ID,
           grant_type: 'urn:ietf:params:oauth:grant-type:device_code'
         }
-        const url = 'https://github.com/login/oauth/access_token'
+        const url = '/login/oauth/access_token'
         try {
           const res = await githubApi.post(url, body)
           if (res.access_token) {
